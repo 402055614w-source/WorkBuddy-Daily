@@ -70,8 +70,11 @@ jobs:
                   v = v or {}
                   rt = v.get("refresh_token") or ""
                   p = jwt_payload(rt)
-                  name = p.get("preferred_username") or p.get("email") or p.get("phone_number") or p.get("phone") or key
-                  exp = p.get("exp")
+                  at_p = jwt_payload(v.get("access_token") or "")
+                  name = (at_p.get("preferred_username") or at_p.get("email")
+                          or p.get("preferred_username") or p.get("email")
+                          or p.get("phone_number") or p.get("phone") or key)
+                  exp = p.get("exp") or at_p.get("exp")
                   if not exp:
                       out.append("  · %s：无法解析到期时间" % name)
                       continue
